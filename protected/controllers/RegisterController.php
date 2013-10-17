@@ -23,6 +23,11 @@ class RegisterController extends Controller
                         'actions' => array('index'),
                         'allow' => true,
                         'roles' => array('?'),
+                    ),
+                    array(
+                        'actions' => array('finishregistration'),
+                        'allow' => true,
+                        'roles' => array('@'),
                     )
                 ),
             )
@@ -34,9 +39,16 @@ class RegisterController extends Controller
         $user = new \app\models\User();
 
         if ($user->load($_POST) && $user->save()) {
-            die('Saved successfully <br />' . print_r($user, true));
+            if (Yii::$app->getUser()->login($user, 66)) {
+                return $this->redirect(array('finishregistration'));
+            }
         }
 
         echo $this->render('base', array('model' => $user));
+    }
+
+    public function actionFinishregistration()
+    {
+        die(var_dump(Yii::$app->getUser()->getIsGuest()));
     }
 }

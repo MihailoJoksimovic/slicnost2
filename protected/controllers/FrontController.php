@@ -9,7 +9,7 @@ use yii\web\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 
-class SiteController extends Controller
+class FrontController extends Controller
 {
     public function behaviors()
     {
@@ -39,40 +39,9 @@ class SiteController extends Controller
         );
     }
 
-    public function actions()
-    {
-        return array(
-            'error' => array(
-                'class' => 'yii\web\ErrorAction',
-            ),
-            'captcha' => array(
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ),
-        );
-    }
-
     public function actionIndex()
     {
         return $this->render('index');
-    }
-
-    public function actionLogin()
-    {
-        $model = new LoginForm();
-        if ($model->load($_POST) && $model->login()) {
-            return $this->goBack();
-        } else {
-            return $this->render('login', array(
-                'model' => $model,
-            ));
-        }
-    }
-
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-        return $this->goHome();
     }
 
     public function actionContact()

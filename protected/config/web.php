@@ -3,6 +3,7 @@ $params = require(__DIR__ . '/params.php');
 $config = array(
     'id' => 'bootstrap',
     'basePath' => dirname(__DIR__),
+    'defaultRoute' => 'front',
     'components' => array(
         'request' => array(
             'enableCsrfValidation' => true,
@@ -14,7 +15,7 @@ $config = array(
             'identityClass' => 'app\models\User',
         ),
         'errorHandler' => array(
-            'errorAction' => 'site/error',
+            'errorAction' => 'error/error',
         ),
         'log' => array(
             'traceLevel' => YII_DEBUG ? 3 : 0,

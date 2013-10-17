@@ -18,7 +18,7 @@ namespace app\models;
  * @property string $language
  * @property integer $verified
  */
-class User extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     const TYPE_MEMBER = 1;
     const TYPE_ADMIN = 2;
@@ -92,5 +92,26 @@ class User extends \yii\db\ActiveRecord
         $this->email_hash = md5($this->salt);
         $this->password = hash_hmac('md5', $this->password, $this->salt);
         $this->created = time();
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    //no idea what these are
+    public static function findIdentity($id)
+    {
+
+    }
+
+    public function getAuthKey()
+    {
+        return $this->email_hash;
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        return true;
     }
 }
