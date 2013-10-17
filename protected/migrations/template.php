@@ -8,18 +8,17 @@
 echo "<?php\n";
 ?>
 
+namespace app\migrations;
+
 class <?php echo $className; ?> extends \yii\db\Migration
 {
     public function up()
     {
         $transaction=$this->getDbConnection()->beginTransaction();
-        try
-        {
+        try {
 
             $transaction->commit();
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             echo "Exception: ".$e->getMessage()."\n";
             $transaction->rollback();
             return false;

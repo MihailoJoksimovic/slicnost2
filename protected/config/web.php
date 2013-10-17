@@ -3,7 +3,6 @@ $params = require(__DIR__ . '/params.php');
 $config = array(
     'id' => 'bootstrap',
     'basePath' => dirname(__DIR__),
-    'runtimePath' => '../runtime',
     'components' => array(
         'request' => array(
             'enableCsrfValidation' => true,
