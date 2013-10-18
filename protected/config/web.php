@@ -33,6 +33,14 @@ $config = array(
             'password' => '',
             'charset' => 'utf8',
         ),
+        'urlManager' => array(
+            'enablePrettyUrl' => true,
+            'showScriptName' => true,
+            'rules' => array(
+                //profile urls
+                'profile/<id:\d+>' => 'profile/view'
+            )
+        )
     ),
     'params' => $params,
 );

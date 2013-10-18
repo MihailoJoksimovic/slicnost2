@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use \app\models\PersonalInfo;
+use yii\helpers\BaseHtml;
 
 /**
  * @var yii\base\View $this
@@ -19,6 +21,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(array('id' => 'form-signup')); ?>
                 <?php echo $form->field($user, 'email'); ?>
+                <?php echo $form->field($personalInfo, 'first_name'); ?>
+                <?php echo $form->field($personalInfo, 'last_name'); ?>
+                <?php echo BaseHtml::activeDropDownList($personalInfo, 'gender', array(
+                    PersonalInfo::GENDER_MALE => 'Male',
+                    PersonalInfo::GENDER_FEMALE => 'Female'
+                )); ?>
                 <?php echo $form->field($user, 'password')->passwordInput(); ?>
                 <div class="form-group">
                     <?php echo Html::submitButton('Signup', array('class' => 'btn btn-primary')); ?>

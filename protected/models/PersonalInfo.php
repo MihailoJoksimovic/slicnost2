@@ -37,7 +37,7 @@ class PersonalInfo extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return array(
-			array('first_name, last_name, full_name, gender', 'required'),
+			array('first_name, last_name, gender', 'required'),
 			array('gender, country', 'integer'),
 			array('date_of_birth', 'safe'),
 			array('first_name, last_name', 'string', 'max' => 32, 'min' => 2),
@@ -64,6 +64,13 @@ class PersonalInfo extends \yii\db\ActiveRecord
 			'address' => 'Address',
 			'about_me' => 'About Me',
 		);
+	}
+
+	public function beforeSave()
+	{
+		//TODO trim everything
+		$this->full_name = $this->first_name . ' ' . $this->last_name;
+		return true;
 	}
 
 	/**

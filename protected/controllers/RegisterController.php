@@ -32,13 +32,25 @@ class RegisterController extends Controller
     public function actionRegister()
     {
         $user = new \app\models\User();
+        $personalInfo = new \app\models\PersonalInfo();
 
-        if ($user->load($_POST) && $user->save()) {
-            if (Yii::$app->getUser()->login($user, 66)) {
-                return $this->goHome();
+        if ($user->load($_POST) && $personalInfo->load($_POST)) {
+            if ($user->validate() && $personalInfo->validate()) {
+                $user->save();
+                $personalInfo->user_id = $user->id;
+                $personalInfo->save();
+                if (Yii::$app->getUser()->login($user, 66)) {
+                    return $this->goHome();
+                }
             }
         }
 
-        echo $this->render('register', array('user' => $user));
+        echo $this->render(
+            'register',
+            array(
+                'user' => $user,
+                'personalInfo' => $personalInfo
+            )
+        );
     }
 }
