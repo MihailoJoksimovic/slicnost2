@@ -8,13 +8,11 @@
 echo "<?php\n";
 ?>
 
-namespace app\migrations;
-
 class <?php echo $className; ?> extends \yii\db\Migration
 {
     public function up()
     {
-        $transaction=$this->getDbConnection()->beginTransaction();
+        $transaction = $this->db->beginTransaction();
         try {
 
             $transaction->commit();

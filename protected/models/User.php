@@ -17,6 +17,8 @@ namespace app\models;
  * @property string $email_hash
  * @property string $language
  * @property integer $verified
+ *
+ * @property PersonalInfo $personalInfo
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -43,9 +45,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return array(
-            array('username, email, password', 'required'),
-            array('username', 'string', 'max' => 32),
+            array('email, password', 'required'),
             array('email', 'string', 'max' => 256),
+            // array('email', 'email'),
             array('password', 'string', 'max' => 128)
         );
     }
@@ -81,17 +83,20 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     private function fillInitial()
     {
-        $this->username_canonical = strtolower($this->username);
         $this->type = self::TYPE_MEMBER;
         $this->status = self::STATUS_ACTIVE;
         $this->verified = self::VERIFIED_NO;
         $this->language = 'en';
+        $this->created = time();
+
+        //fancy code name
+        $this->username = $this->generateCodeName();
+        $this->username_canonical = strtolower($this->username);
 
         //improve encryptions
         $this->salt = md5(sha1(time() . 'salty') . 'very_salty');
         $this->email_hash = md5($this->salt);
-        $this->password = hash_hmac('md5', $this->password, $this->salt);
-        $this->created = time();
+        $this->password = $this->encryptPassword($this->password, $this->salt);
     }
 
     public function getId()
@@ -99,10 +104,22 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return $this->id;
     }
 
-    //no idea what these are
     public static function findIdentity($id)
     {
+        return self::find(array('id' => $id));
+    }
 
+    public static function findByEmail($email, $onlyActive = true) 
+    {
+        $conditions = array(
+            'email' => $email
+        );
+
+        if ($onlyActive) {
+            $conditions['status'] = self::STATUS_ACTIVE;
+        }
+
+        return self::find($conditions);
     }
 
     public function getAuthKey()
@@ -112,6 +129,30 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public function validateAuthKey($authKey)
     {
-        return true;
+        return $this->email_hash == $authKey;
+    }
+
+    private function encryptPassword($password, $salt)
+    {
+        return hash_hmac('md5', $password, $salt);
+    }
+
+    public function validatePassword($password)
+    {
+        return $this->password === $this->encryptPassword($password, $this->salt);
+    }
+
+    private function generateCodeName()
+    {
+        //TODO
+        return sha1($this->email); 
+    }
+    
+    /**
+     * @return \yii\db\ActiveRelation
+     */
+    public function getPersonalInfo()
+    {
+        return $this->hasOne('PersonalInfo', array('user_id' => 'id'));
     }
 }

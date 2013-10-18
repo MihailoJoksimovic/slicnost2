@@ -7,7 +7,6 @@ use yii\web\AccessControl;
 use yii\web\Controller;
 use yii\web\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
 
 class FrontController extends Controller
 {

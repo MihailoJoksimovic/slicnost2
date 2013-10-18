@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 /**
  * @var yii\base\View $this
  * @var yii\widgets\ActiveForm $form
- * @var common\models\User $model
+ * @var common\models\User $user
  */
 $this->title = 'Signup';
 $this->params['breadcrumbs'][] = $this->title;
@@ -18,9 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-5">
             <?php $form = ActiveForm::begin(array('id' => 'form-signup')); ?>
-                <?php echo $form->field($model, 'username'); ?>
-                <?php echo $form->field($model, 'email'); ?>
-                <?php echo $form->field($model, 'password')->passwordInput(); ?>
+                <?php echo $form->field($user, 'email'); ?>
+                <?php echo $form->field($user, 'password')->passwordInput(); ?>
                 <div class="form-group">
                     <?php echo Html::submitButton('Signup', array('class' => 'btn btn-primary')); ?>
                 </div>

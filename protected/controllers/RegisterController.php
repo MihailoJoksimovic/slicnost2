@@ -11,7 +11,7 @@ use app\models\ContactForm;
 
 class RegisterController extends Controller
 {
-    public $defaultAction = 'index';
+    public $defaultAction = 'register';
 
     public function behaviors()
     {
@@ -20,35 +20,25 @@ class RegisterController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => array(
                     array(
-                        'actions' => array('index'),
+                        'actions' => array('register'),
                         'allow' => true,
                         'roles' => array('?'),
-                    ),
-                    array(
-                        'actions' => array('finishregistration'),
-                        'allow' => true,
-                        'roles' => array('@'),
                     )
                 ),
             )
         );
     }
 
-    public function actionIndex()
+    public function actionRegister()
     {
         $user = new \app\models\User();
 
         if ($user->load($_POST) && $user->save()) {
             if (Yii::$app->getUser()->login($user, 66)) {
-                return $this->redirect(array('finishregistration'));
+                return $this->goHome();
             }
         }
 
-        echo $this->render('base', array('model' => $user));
-    }
-
-    public function actionFinishregistration()
-    {
-        die(var_dump(Yii::$app->getUser()->getIsGuest()));
+        echo $this->render('register', array('user' => $user));
     }
 }
