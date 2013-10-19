@@ -8,7 +8,7 @@ class Controller extends CController
 
     public function init()
     {
-        $navigationMenu = new NavigationMenu(isGuest());
+        $navigationMenu = new NavigationMenu(isGuest(), uid());
         $this->menu = $navigationMenu->getMenuItems();
     }
 }

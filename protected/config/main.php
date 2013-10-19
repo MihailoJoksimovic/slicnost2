@@ -30,13 +30,17 @@ return array(
         'user' => array(
             'class' => 'WebUser',
             'allowAutoLogin' => true,
-            'loginUrl' => array('/user/login'),
+            'loginUrl' => array('/front/login'),
             'autoRenewCookie' => true,
         ),
         'urlManager' => array(
             'urlFormat' => 'path',
             'rules' => array(
                 '' => 'front',
+                'logout' => 'front/logout',
+
+                //profile urls
+               'profile/<id:\d+>' => 'profile/view'
             ),
             'showScriptName' => true,
             'useStrictParsing' => false,

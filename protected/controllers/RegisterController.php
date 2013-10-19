@@ -12,13 +12,15 @@ class RegisterController extends Controller
             $personalInfo->attributes = $_POST['PersonalInfo'];
 
             if ($user->validate() & $personalInfo->validate()) {
+                $password = $user->password;
                 $user->save();
                 $personalInfo->user_id = $user->id;
                 $personalInfo->save();
                 //login and redirect
-                $userIdentity = new UserIdentity($user->email, '');
-                $userIdentity->authenticate(TRUE);
-                u()->login($userIdentity, 60 * 60 * 24 * 30);
+                $userIdentity = new UserIdentity($user->email, $password);
+                $userIdentity->authenticate();
+                u()->login($userIdentity, 0);
+                $this->redirect(array('profile/view', 'id' => $user->id));
             }
         }
 

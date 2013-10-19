@@ -5,8 +5,7 @@
  *
  * The followings are the available columns in table 'user':
  * @property integer $id
- * @property string $username
- * @property string $username_canonical
+ * @property string $code_name
  * @property string $email
  * @property string $password
  * @property string $salt
@@ -76,8 +75,7 @@ class User extends ActiveRecord
     {
         return array(
             'id' => t('ID'),
-            'username' => t('Username'),
-            'username_canonical' => t('Username Canonical'),
+            'code_name' => t('Code name'),
             'email' => t('Email'),
             'password' => t('Password'),
             'salt' => t('Salt'),
@@ -108,8 +106,7 @@ class User extends ActiveRecord
         $this->created = time();
 
         //TODO fancy code name
-        $this->username = $this->generateCodeName();
-        $this->username_canonical = strtolower($this->username);
+        $this->code_name = $this->generateCodeName();
 
         //TODO improve encryptions
         $this->salt = md5(sha1(time() . 'salty') . 'very_salty');
@@ -123,7 +120,7 @@ class User extends ActiveRecord
         return sha1($this->email);
     }
 
-    private function encryptPassword($password, $salt)
+    public function encryptPassword($password, $salt)
     {
         return hash_hmac('md5', $password, $salt);
     }

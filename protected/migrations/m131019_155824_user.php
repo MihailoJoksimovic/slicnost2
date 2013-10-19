@@ -8,8 +8,7 @@ class m131019_155824_user extends CDbMigration
             'user',
             array(
                 'id' => 'pk',
-                'username' => 'VARCHAR(32) NOT NULL UNIQUE',
-                'username_canonical' => 'VARCHAR(32) NOT NULL UNIQUE',
+                'code_name' => 'VARCHAR(32) NOT NULL UNIQUE',
                 'email' => 'VARCHAR(256) NOT NULL UNIQUE',
                 'password' => 'VARCHAR(128) NOT NULL',
                 'salt' => 'VARCHAR(128) NOT NULL',
@@ -35,7 +34,8 @@ class m131019_155824_user extends CDbMigration
                 'country' => 'SMALLINT',
                 'city' => 'VARCHAR(64)',
                 'address' => 'VARCHAR(64)',
-                'about_me' => 'VARCHAR(128)'
+                'about_me' => 'VARCHAR(128)',
+                'relationship_status' => 'TINYINT'
             ),
             'engine=InnoDb'
         );

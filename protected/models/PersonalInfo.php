@@ -14,6 +14,7 @@
  * @property string $city
  * @property string $address
  * @property string $about_me
+ * @property integer $relationship_status
  *
  * @property User $user
  */
@@ -22,6 +23,10 @@ class PersonalInfo extends ActiveRecord
 
     const GENDER_MALE = 1;
     const GENDER_FEMALE = 2;
+
+    const RELATIONSHIP_SINGLE = 1;
+    const RELATIONSHIP_IN_RELATIONSHIP = 2;
+    const RELATIONSHIP_MERRIED = 3;
 
     /**
      * Returns the static model of the specified AR class.
@@ -47,7 +52,7 @@ class PersonalInfo extends ActiveRecord
     {
         return array(
             array('first_name, last_name, gender', 'required'),
-            array('gender, country', 'NumberValidator', 'integerOnly' => true),
+            array('gender, country, relationship_status', 'NumberValidator', 'integerOnly' => true),
             array('first_name, last_name', 'StringValidator', 'max' => 32),
             array('date_of_birth', 'safe'),
             array('city, address', 'StringValidator', 'max' => 64),

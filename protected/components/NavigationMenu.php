@@ -9,15 +9,9 @@ class NavigationMenu
     private $viewedUserId;
 
     private $guestItems = array(
-        array('label'=>'Home', 'url'=>array('/front/index')),
-        array('label'=>'Register', 'url'=>array('/register')),
-        array('label'=>'Login', 'url'=>array('/front/login'))
-    );
-
-    private $loggedInItems = array(
-        array('label'=>'Home', 'url'=>array('/front/index')),
-        array('label'=>'Register', 'url'=>array('/register')),
-        array('label'=>'Login', 'url'=>array('/front/login'))
+        array('label' => 'Home', 'url' => array('/front/index')),
+        array('label' => 'Register', 'url' => array('/register')),
+        array('label' => 'Login', 'url' => array('/front/login'))
     );
 
     public function __construct($isGuest = true, $userId = null, $viewedUserId = null)
@@ -32,7 +26,16 @@ class NavigationMenu
         if ($this->isGuest) {
             return $this->guestItems;
         } else {
-            return array();
+            return $this->getLoggedInMenuItems();
         }
+    }
+
+    private function getLoggedInMenuItems()
+    {
+        return array(
+            array('label' => 'Home', 'url' => array('/front/index')),
+            array('label' => 'Profile', 'url' => array('/profile/view', 'id' => $this->userId)),
+            array('label' => 'Logout', 'url' => array('/front/logout'))
+        );
     }
 }

@@ -20,18 +20,22 @@ class FrontController extends Controller
 
     public function actionLogin()
     {
-        $model=new LoginForm;
+        $loginForm = new LoginForm;
 
-        // collect user input data
-        if(isset($_POST['LoginForm']))
-        {
-            $model->attributes=$_POST['LoginForm'];
-            // validate user input and redirect to the previous page if valid
-            if($model->validate() && $model->login())
-                $this->redirect(Yii::app()->user->returnUrl);
+        if (isset($_POST['LoginForm'])) {
+            $loginForm->attributes=$_POST['LoginForm'];
+
+            if ($loginForm->validate() && $loginForm->login()) {
+                if (u()->returnUrl == a()->getRequest()->scriptUrl || u()->returnUrl == url('/user/logout')) {
+                    //default redirect
+                    $this->redirect(array('/front'));
+                } else {
+                    $this->redirect(u()->returnUrl);
+                }
+            }
         }
-        // display the login form
-        $this->render('login',array('model'=>$model));
+
+        $this->render('login', array('loginForm'=>$loginForm));
     }
 
     public function actionLogout()

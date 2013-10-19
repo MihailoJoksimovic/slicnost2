@@ -7,6 +7,7 @@
  */
 class UserIdentity extends CUserIdentity
 {
+    const ERROR_EMAIL_INVALID = 3;
 
     private $_email;
 
@@ -35,18 +36,25 @@ class UserIdentity extends CUserIdentity
      */
     public function authenticate()
     {
-        $users=array(
-            // username => password
-            'demo'=>'demo',
-            'admin'=>'admin',
+        $user = User::model()->find(
+            'LOWER(email) = :email',
+            array(':email' => strtolower($this->_email))
         );
-        if (!isset($users[$this->username])) {
-            $this->errorCode=self::ERROR_USERNAME_INVALID;
-        } elseif ($users[$this->username] !== $this->password) {
-            $this->errorCode=self::ERROR_PASSWORD_INVALID;
+
+        if (!isset($user)) {
+            $this->errorCode = self::ERROR_EMAIL_INVALID;
+        } else if ($user->password !== $user->encryptPassword($this->_password, $user->salt)) {
+            $this->errorCode = self::ERROR_PASSWORD_INVALID;
         } else {
             $this->errorCode=self::ERROR_NONE;
+            $this->_id = $user->id;
+            $this->updateSession();
         }
         return !$this->errorCode;
+    }
+
+    private function updateSession()
+    {
+        // $this->setState('key', 'value');
     }
 }
