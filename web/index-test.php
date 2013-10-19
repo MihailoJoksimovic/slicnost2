@@ -1,18 +1,15 @@
 <?php
+/**
+ * This is the bootstrap file for test application.
+ * This file should be removed when the application is deployed for production.
+ */
 
-if (!in_array(@$_SERVER['REMOTE_ADDR'], array('127.0.0.1', '::1'))) {
-    die('You are not allowed to access this file.');
-}
+// change the following paths if necessary
+$yii=dirname(__FILE__).'/../yii/framework/yii.php';
+$config=dirname(__FILE__).'/protected/config/test.php';
 
-defined('YII_DEBUG') or define('YII_DEBUG', true);
+// remove the following line when in production mode
+defined('YII_DEBUG') or define('YII_DEBUG',true);
 
-defined('YII_ENV') or define('YII_ENV', 'test');
-
-require_once(__DIR__ . '/../vendor/autoload.php');
-require_once(__DIR__ . '/../vendor/yiisoft/yii2/yii/Yii.php');
-Yii::importNamespaces(require(__DIR__ . '/../vendor/composer/autoload_namespaces.php'));
-
-$config = require(__DIR__ . '/../config/web-test.php');
-
-$application = new yii\web\Application($config);
-$application->run();
+require_once($yii);
+Yii::createWebApplication($config)->run();

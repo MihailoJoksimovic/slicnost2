@@ -1,10 +1,9 @@
 <?php
 
-namespace app\models;
-
 /**
  * This is the model class for table "user".
  *
+ * The followings are the available columns in table 'user':
  * @property integer $id
  * @property string $username
  * @property string $username_canonical
@@ -20,7 +19,7 @@ namespace app\models;
  *
  * @property PersonalInfo $personalInfo
  */
-class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord
 {
     const TYPE_MEMBER = 1;
     const TYPE_ADMIN = 2;
@@ -32,53 +31,72 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     const VERIFIED_NO = 2;
 
     /**
-     * @inheritdoc
+     * Returns the static model of the specified AR class.
+     * @return User the static model class
      */
-    public static function tableName()
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
     {
         return 'user';
     }
 
     /**
-     * @inheritdoc
+     * @return array validation rules for model attributes.
      */
     public function rules()
     {
         return array(
             array('email, password', 'required'),
-            array('email', 'string', 'max' => 256),
-            // array('email', 'email'),
-            array('password', 'string', 'max' => 128)
+            array('email', 'StringValidator', 'max' => 256),
+            // array('email', 'email', 'checkMx' => true),
         );
     }
 
     /**
-     * @inheritdoc
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'personalInfo' => array(self::HAS_ONE, 'PersonalInfo', 'user_id'),
+        );
+    }
+
+    /**
+     * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels()
     {
         return array(
-            'id' => 'ID',
-            'username' => 'Username',
-            'username_canonical' => 'Username Canonical',
-            'email' => 'Email',
-            'password' => 'Password',
-            'salt' => 'Salt',
-            'type' => 'Type',
-            'status' => 'Status',
-            'created' => 'Created',
-            'email_hash' => 'Email Hash',
-            'language' => 'Language',
-            'verified' => 'Verified',
+            'id' => t('ID'),
+            'username' => t('Username'),
+            'username_canonical' => t('Username Canonical'),
+            'email' => t('Email'),
+            'password' => t('Password'),
+            'salt' => t('Salt'),
+            'type' => t('Type'),
+            'status' => t('Status'),
+            'created' => t('Created'),
+            'email_hash' => t('Email Hash'),
+            'language' => t('Language'),
+            'verified' => t('Verified'),
         );
     }
 
-    public function beforeSave()
+    protected function beforeSave()
     {
-        if ($this->getIsNewRecord()) {
+        if ($this->isNewRecord) {
             $this->fillInitial();
         }
-        return true;
+
+        return parent::beforeSave();
     }
 
     private function fillInitial()
@@ -89,47 +107,20 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         $this->language = 'en';
         $this->created = time();
 
-        //fancy code name
+        //TODO fancy code name
         $this->username = $this->generateCodeName();
         $this->username_canonical = strtolower($this->username);
 
-        //improve encryptions
+        //TODO improve encryptions
         $this->salt = md5(sha1(time() . 'salty') . 'very_salty');
         $this->email_hash = md5($this->salt);
         $this->password = $this->encryptPassword($this->password, $this->salt);
     }
 
-    public function getId()
+    private function generateCodeName()
     {
-        return $this->id;
-    }
-
-    public static function findIdentity($id)
-    {
-        return self::find(array('id' => $id));
-    }
-
-    public static function findByEmail($email, $onlyActive = true) 
-    {
-        $conditions = array(
-            'email' => $email
-        );
-
-        if ($onlyActive) {
-            $conditions['status'] = self::STATUS_ACTIVE;
-        }
-
-        return self::find($conditions);
-    }
-
-    public function getAuthKey()
-    {
-        return $this->email_hash;
-    }
-
-    public function validateAuthKey($authKey)
-    {
-        return $this->email_hash == $authKey;
+        //TODO
+        return sha1($this->email);
     }
 
     private function encryptPassword($password, $salt)
@@ -140,19 +131,5 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
         return $this->password === $this->encryptPassword($password, $this->salt);
-    }
-
-    private function generateCodeName()
-    {
-        //TODO
-        return sha1($this->email); 
-    }
-    
-    /**
-     * @return \yii\db\ActiveRelation
-     */
-    public function getPersonalInfo()
-    {
-        return $this->hasOne('PersonalInfo', array('user_id' => 'id'));
     }
 }

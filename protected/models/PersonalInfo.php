@@ -1,10 +1,9 @@
 <?php
 
-namespace app\models;
-
 /**
  * This is the model class for table "personal_info".
  *
+ * The followings are the available columns in table 'personal_info':
  * @property integer $user_id
  * @property string $first_name
  * @property string $last_name
@@ -18,71 +17,90 @@ namespace app\models;
  *
  * @property User $user
  */
-class PersonalInfo extends \yii\db\ActiveRecord
+class PersonalInfo extends ActiveRecord
 {
-	const GENDER_MALE = 1;
-	const GENDER_FEMALE = 2;
 
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return 'personal_info';
-	}
+    const GENDER_MALE = 1;
+    const GENDER_FEMALE = 2;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return array(
-			array('first_name, last_name, gender', 'required'),
-			array('gender, country', 'integer'),
-			array('date_of_birth', 'safe'),
-			array('first_name, last_name', 'string', 'max' => 32, 'min' => 2),
-			array('full_name', 'string', 'max' => 65, 'min' => 2),
-			array('city, address', 'string', 'max' => 64),
-			array('about_me', 'string', 'max' => 128)
-		);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * @return PersonalInfo the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'user_id' => 'User ID',
-			'first_name' => 'First Name',
-			'last_name' => 'Last Name',
-			'full_name' => 'Full Name',
-			'date_of_birth' => 'Date Of Birth',
-			'gender' => 'Gender',
-			'country' => 'Country',
-			'city' => 'City',
-			'address' => 'Address',
-			'about_me' => 'About Me',
-		);
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'personal_info';
+    }
 
-	public function beforeSave()
-	{
-		//TODO trim everything
-		$this->full_name = $this->first_name . ' ' . $this->last_name;
-		return true;
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('first_name, last_name, gender', 'required'),
+            array('gender, country', 'NumberValidator', 'integerOnly' => true),
+            array('first_name, last_name', 'StringValidator', 'max' => 32),
+            array('date_of_birth', 'safe'),
+            array('city, address', 'StringValidator', 'max' => 64),
+            array('about_me', 'StringValidator', 'max' => 128),
+        );
+    }
 
-	/**
-	 * @return \yii\db\ActiveRelation
-	 */
-	public function getUser()
-	{
-		return $this->hasOne('User', array('id' => 'user_id'));
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        return array(
+            'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+        );
+    }
 
-	public function getGenderString()
-	{
-		return $this->gender == self::GENDER_FEMALE ? 'Female' : 'Male';
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'user_id' => t('User'),
+            'first_name' => t('First Name'),
+            'last_name' => t('Last Name'),
+            'full_name' => t('Full Name'),
+            'date_of_birth' => t('Date Of Birth'),
+            'gender' => t('Gender'),
+            'country' => t('Country'),
+            'city' => t('City'),
+            'address' => t('Address'),
+            'about_me' => t('About Me'),
+        );
+    }
+
+    protected function beforeSave()
+    {
+        //TODO trim everything
+        if ($this->isNewRecord) {
+            $this->full_name = $this->first_name . ' ' . $this->last_name;
+        }
+
+        return parent::beforeSave();
+    }
+
+    public function getGenderString()
+    {
+        return $this->gender == self::GENDER_FEMALE ? t('Female') : t('Male');
+    }
+
+    public static function getGenderStringStatic($gender)
+    {
+        return $gender == self::GENDER_FEMALE ? t('Female') : t('Male');
+    }
 }

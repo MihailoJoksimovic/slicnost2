@@ -1,14 +1,15 @@
 <?php
 
-// comment out the following two lines when deployed to production
+// change the following paths if necessary
+$yii=dirname(__FILE__).'/../../yii/framework/yii.php';
+$config=dirname(__FILE__).'/../protected/config/main.php';
+
+// remove the following lines when in production mode
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-defined('YII_ENV') or define('YII_ENV', 'dev');
+// specify how many levels of call stack should be shown in each log message
+defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 
-require(__DIR__ . '/../protected/vendor/autoload.php');
-require(__DIR__ . '/../protected/vendor/yiisoft/yii2/yii/Yii.php');
-Yii::importNamespaces(require(__DIR__ . '/../protected/vendor/composer/autoload_namespaces.php'));
+require_once($yii);
+require_once(dirname(__FILE__) . '/../protected/components/Shortcut.php');
 
-$config = require(__DIR__ . '/../protected/config/web.php');
-
-$application = new yii\web\Application($config);
-$application->run();
+Yii::createWebApplication($config)->run();

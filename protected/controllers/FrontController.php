@@ -1,63 +1,42 @@
 <?php
 
-namespace app\controllers;
-
-use Yii;
-use yii\web\AccessControl;
-use yii\web\Controller;
-use yii\web\VerbFilter;
-use app\models\LoginForm;
-
 class FrontController extends Controller
 {
-    public function behaviors()
-    {
-        return array(
-            'access' => array(
-                'class' => AccessControl::className(),
-                'only' => array('login', 'logout'),
-                'rules' => array(
-                    array(
-                        'actions' => array('login'),
-                        'allow' => true,
-                        'roles' => array('?'),
-                    ),
-                    array(
-                        'actions' => array('logout'),
-                        'allow' => true,
-                        'roles' => array('@'),
-                    ),
-                ),
-            ),
-            'verbs' => array(
-                'class' => VerbFilter::className(),
-                'actions' => array(
-                    'logout' => array('post'),
-                ),
-            ),
-        );
-    }
-
     public function actionIndex()
     {
-        return $this->render('index');
+        $this->render('index');
     }
 
-    public function actionContact()
+    public function actionError()
     {
-        $model = new ContactForm;
-        if ($model->load($_POST) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-            return $this->refresh();
-        } else {
-            return $this->render('contact', array(
-                'model' => $model,
-            ));
+        if ($error=Yii::app()->errorHandler->error) {
+            if (Yii::app()->request->isAjaxRequest) {
+                echo $error['message'];
+            } else {
+                $this->render('error', $error);
+            }
         }
     }
 
-    public function actionAbout()
+    public function actionLogin()
     {
-        return $this->render('about');
+        $model=new LoginForm;
+
+        // collect user input data
+        if(isset($_POST['LoginForm']))
+        {
+            $model->attributes=$_POST['LoginForm'];
+            // validate user input and redirect to the previous page if valid
+            if($model->validate() && $model->login())
+                $this->redirect(Yii::app()->user->returnUrl);
+        }
+        // display the login form
+        $this->render('login',array('model'=>$model));
+    }
+
+    public function actionLogout()
+    {
+        u()->logout();
+        $this->redirect(a()->homeUrl);
     }
 }

@@ -1,64 +1,48 @@
-<?php
-use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
-
-/**
- * @var $this \yii\base\View
- * @var $content string
- */
-app\config\AppAsset::register($this);
-?>
-<?php $this->beginPage(); ?>
-<!DOCTYPE html>
-<html lang="en">
+<?php /* @var $this Controller */ ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <meta charset="<?php echo Yii::$app->charset; ?>"/>
-    <title><?php echo Html::encode($this->title); ?></title>
-    <?php $this->head(); ?>
-</head>
-<body>
-<?php $this->beginBody(); ?>
-    <?php
-        NavBar::begin(array(
-            'brandLabel' => 'My Company',
-            'brandUrl' => Yii::$app->homeUrl,
-            'options' => array(
-                'class' => 'navbar-inverse navbar-fixed-top',
-            ),
-        ));
-        echo Nav::widget(array(
-            'options' => array('class' => 'navbar-nav pull-right'),
-            'items' => array(
-                array('label' => 'Home', 'url' => array('/site/index')),
-                array('label' => 'About', 'url' => array('/site/about')),
-                array('label' => 'Contact', 'url' => array('/site/contact')),
-                Yii::$app->user->isGuest ?
-                    array('label' => 'Login', 'url' => array('/site/login')) :
-                    array('label' => 'Logout (' . Yii::$app->user->identity->username .')' ,
-                        'url' => array('/site/logout'),
-                        'linkOptions' => array('data-method' => 'post')),
-            ),
-        ));
-        NavBar::end();
-    ?>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="en" />
 
-    <div class="container">
-        <?php echo Breadcrumbs::widget(array(
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : array(),
+    <!-- blueprint CSS framework -->
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
+
+    <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+</head>
+
+<body>
+
+<div class="container" id="page">
+
+    <div id="header">
+        <div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+    </div><!-- header -->
+
+    <div id="mainmenu">
+        <?php $this->widget('zii.widgets.CMenu', array(
+            'items'=>$this->menu,
         )); ?>
-        <?php echo $content; ?>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p class="pull-left">&copy; My Company <?php echo date('Y'); ?></p>
-            <p class="pull-right"><?php echo Yii::powered(); ?></p>
-        </div>
-    </footer>
+    <?php echo $content; ?>
 
-<?php $this->endBody(); ?>
+    <div class="clear"></div>
+
+    <div id="footer">
+        Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
+        All Rights Reserved.<br/>
+        <?php echo Yii::powered(); ?>
+    </div><!-- footer -->
+
+</div><!-- page -->
+
 </body>
 </html>
-<?php $this->endPage(); ?>
