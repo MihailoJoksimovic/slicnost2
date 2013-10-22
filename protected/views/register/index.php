@@ -1,6 +1,6 @@
 <?php
 $form = $this->beginWidget('ActiveForm', array(
-    'id' => 'favorite-form',
+    'id' => 'register-form',
 ));
 
 echo $form->errorSummary(array($user, $personalInfo));

@@ -35,7 +35,7 @@ class m131019_155824_user extends CDbMigration
                 'city' => 'VARCHAR(64)',
                 'address' => 'VARCHAR(64)',
                 'about_me' => 'VARCHAR(128)',
-                'relationship_status' => 'TINYINT'
+                'relationship_status_id' => 'TINYINT'
             ),
             'engine=InnoDb'
         );

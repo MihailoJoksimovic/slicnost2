@@ -54,6 +54,7 @@ class User extends ActiveRecord
         return array(
             array('email, password', 'required'),
             array('email', 'StringValidator', 'max' => 256),
+            array('password', 'StringValidator', 'min' => 6),
             // array('email', 'email', 'checkMx' => true),
         );
     }
@@ -117,7 +118,7 @@ class User extends ActiveRecord
     private function generateCodeName()
     {
         //TODO
-        return sha1($this->email);
+        return sha1($this->email . microtime());
     }
 
     public function encryptPassword($password, $salt)
