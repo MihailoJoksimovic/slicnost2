@@ -37,7 +37,7 @@ class ProfileController extends Controller
         if ($personalInfo->hasAttribute($_POST['id'])) {
             $personalInfo->$_POST['id'] = $_POST['value'];
             if ($personalInfo->validate() && $personalInfo->update(array($_POST['id']))) {
-                echo $personalInfo->$_POST['id'];
+                echo Lists::getListValue('list_' . str_replace('_id', '', $_POST['id']), $_POST['value']);
             } else {
                 //print error
                 //p($personalInfo->errors);
